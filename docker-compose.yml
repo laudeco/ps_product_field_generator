@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  prestashop:
+    image: prestashop/prestashop
+    ports:
+      - "80:80"
+    environment:
+      DB_SERVER: mysql
+      DB_PORT: 3306
+      DB_USER: prestashop
+      DB_PASSWD: prestashop
+      PS_DEV_MODE: 1
+      PS_DEMO_MODE: 1
+      PS_INSTALL_AUTO: 1
+      PS_DOMAIN: localhost
+    volumes:
+      - .:/code
+    links:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prestashop
+      MYSQL_DATABASE: prestashop
+      MYSQL_USER: prestashop
+      MYSQL_PASSWORD: prestashop
+    volumes:
+      - mysql-data:/var/lib/mysql
+volumes:
+  mysql-data:
+    driver: local
