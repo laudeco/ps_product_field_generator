@@ -13,8 +13,9 @@ services:
       PS_DEMO_MODE: 1
       PS_INSTALL_AUTO: 1
       PS_DOMAIN: localhost
+      PS_FOLDER_ADMIN: admin0158cdkbr
     volumes:
-      - .:/code
+      - .:/modules/ps_product_field_generator
     links:
       - mysql
   mysql:
