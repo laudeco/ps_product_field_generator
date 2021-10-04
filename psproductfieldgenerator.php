@@ -124,17 +124,12 @@ class psproductfieldgenerator extends Module
         $helper->currentIndex = AdminController::$currentIndex . '&' . http_build_query(['configure' => $this->name]);
         $helper->submit_action = 'submit' . $this->name;
 
-        // Default language
         $helper->default_form_language = (int)Configuration::get('PS_LANG_DEFAULT');
-        $helper->show_cancel_button = true;
 
         // Load current value into the form
-        $helper->fields_value['PFG_FIELD_REFERENCE'] = Tools::getValue('PFG_FIELD_REFERENCE',
-            Configuration::get('PFG_CONFIG_FIELD_REFERENCE'));
-        $helper->fields_value['PFG_FIELD_REFERENCE_PREFIX'] = Tools::getValue('PFG_FIELD_REFERENCE_PREFIX',
-            Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'));
-        $helper->fields_value['PFG_FIELD_EAN13'] = Tools::getValue('PFG_FIELD_EAN13',
-            Configuration::get('PFG_CONFIG_FIELD_EAN13'));
+        $helper->fields_value['PFG_FIELD_REFERENCE'] = Tools::getValue('PFG_FIELD_REFERENCE', Configuration::get('PFG_CONFIG_FIELD_REFERENCE'));
+        $helper->fields_value['PFG_FIELD_REFERENCE_PREFIX'] = Tools::getValue('PFG_FIELD_REFERENCE_PREFIX', Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'));
+        $helper->fields_value['PFG_FIELD_EAN13'] = Tools::getValue('PFG_FIELD_EAN13', Configuration::get('PFG_CONFIG_FIELD_EAN13'));
 
         return $helper->generateForm([$form]);
     }
