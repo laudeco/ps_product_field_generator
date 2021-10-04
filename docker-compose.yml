@@ -10,12 +10,11 @@ services:
       DB_USER: prestashop
       DB_PASSWD: prestashop
       PS_DEV_MODE: 1
-      PS_DEMO_MODE: 1
       PS_INSTALL_AUTO: 1
       PS_DOMAIN: localhost
       PS_FOLDER_ADMIN: admin0158cdkbr
     volumes:
-      - .:/modules/ps_product_field_generator
+      - .:/var/www/html/modules/psproductfieldgenerator
     links:
       - mysql
   mysql:
