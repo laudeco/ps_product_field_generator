@@ -39,18 +39,12 @@ class psproductfieldgenerator extends Module
             $fieldReferencePrefix = (string)Tools::getValue('PFG_REFERENCE_PREFIX');
             $isEanEnable = (int)Tools::getValue('PFG_FIELD_EAN13');
 
-            // check that the value is valid
-            if (empty($configValue) || !Validate::isGenericName($configValue)) {
-                // invalid value, show an error
-                $output = $this->displayError($this->l('Invalid Configuration value'));
-            } else {
-                // value is ok, update it and display a confirmation message
-                Configuration::updateValue('PFG_CONFIG_FIELD_REFERENCE', $configValue);
-                Configuration::updateValue('PFG_CONFIG_REFERENCE_PREFIX', $configValue);
-                Configuration::updateValue('PFG_CONFIG_FIELD_EAN13', $configValue);
+            // value is ok, update it and display a confirmation message
+            Configuration::updateValue('PFG_CONFIG_FIELD_REFERENCE', $isFieldReferenceEnable);
+            Configuration::updateValue('PFG_CONFIG_REFERENCE_PREFIX', $fieldReferencePrefix);
+            Configuration::updateValue('PFG_CONFIG_FIELD_EAN13', $isEanEnable);
 
-                $output = $this->displayConfirmation($this->l('Settings updated'));
-            }
+            $output = $this->displayConfirmation($this->l('Settings updated'));
         }
 
         // display any message, then the form
@@ -71,14 +65,22 @@ class psproductfieldgenerator extends Module
                 ],
                 'input' => [
                     [
-                        'type' => 'checkbox',
+                        'type' => 'radio',
                         'label' => $this->l('Product Reference'),
                         'name' => 'PFG_FIELD_REFERENCE',
-                        'values' => [
-                            'query' => [1],
-                            'id' => '',
-                            'name' => '',
-                        ],
+                        'is_bool' => true,
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->l('ON')
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('OFF')
+                            )
+                        ),
                     ],
                     [
                         'type' => 'text',
@@ -86,14 +88,23 @@ class psproductfieldgenerator extends Module
                         'name' => 'PFG_FIELD_REFERENCE_PREFIX',
                     ],
                     [
-                        'type' => 'checkbox',
+                        'type' => 'radio',
                         'label' => $this->l('EAN13'),
                         'name' => 'PFG_FIELD_EAN13',
-                        'values' => [
-                            'query' => [1],
-                            'id' => '',
-                            'name' => '',
-                        ],
+                        'is_bool' => true,
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->l('ON')
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('OFF')
+                            )
+                        ),
+
                     ],
                 ],
                 'submit' => [
@@ -118,9 +129,12 @@ class psproductfieldgenerator extends Module
         $helper->show_cancel_button = true;
 
         // Load current value into the form
-        $helper->fields_value['PFG_FIELD_REFERENCE'] = Tools::getValue('PFG_FIELD_REFERENCE', Configuration::get('PFG_CONFIG_FIELD_REFERENCE'));
-        $helper->fields_value['PFG_FIELD_REFERENCE_PREFIX'] = Tools::getValue('PFG_FIELD_REFERENCE_PREFIX', Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'));
-        $helper->fields_value['PFG_FIELD_EAN13'] = Tools::getValue('PFG_FIELD_EAN13', Configuration::get('PFG_CONFIG_FIELD_EAN13'));
+        $helper->fields_value['PFG_FIELD_REFERENCE'] = Tools::getValue('PFG_FIELD_REFERENCE',
+            Configuration::get('PFG_CONFIG_FIELD_REFERENCE'));
+        $helper->fields_value['PFG_FIELD_REFERENCE_PREFIX'] = Tools::getValue('PFG_FIELD_REFERENCE_PREFIX',
+            Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'));
+        $helper->fields_value['PFG_FIELD_EAN13'] = Tools::getValue('PFG_FIELD_EAN13',
+            Configuration::get('PFG_CONFIG_FIELD_EAN13'));
 
         return $helper->generateForm([$form]);
     }
