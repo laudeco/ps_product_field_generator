@@ -4,7 +4,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class psproductfieldgenerator extends Module
+final class psproductfieldgenerator extends Module
 {
     const MODULE_NAME = 'psproductfieldgenerator';
 
