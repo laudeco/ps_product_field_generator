@@ -63,9 +63,7 @@ final class psproductfieldgenerator extends Module
 
     private function executeProductHook(array $params)
     {
-        /** @var \PrestaShop\PrestaShop\Core\Domain\Product\CommandHandler\UpdateProductDetailsHandlerInterface $handler */
-        $handler = $this->get('prestashop.adapter.product.command_handler.update_product_details_handler');
-        PfgActionProductAdded::create($handler)->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'))->execute($params['id_product'], $params['product']);
+        PfgActionProductAdded::create()->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'))->execute($params['id_product'], $params['product']);
     }
 
     /**
@@ -78,7 +76,7 @@ final class psproductfieldgenerator extends Module
 
         if (Tools::isSubmit('submit' . $this->name)) {
             $isFieldReferenceEnable = (int)Tools::getValue('PFG_FIELD_REFERENCE');
-            $fieldReferencePrefix = (string)Tools::getValue('PFG_REFERENCE_PREFIX');
+            $fieldReferencePrefix = (string)Tools::getValue('PFG_FIELD_REFERENCE_PREFIX');
             $isEanEnable = (int)Tools::getValue('PFG_FIELD_EAN13');
 
             // value is ok, update it and display a confirmation message

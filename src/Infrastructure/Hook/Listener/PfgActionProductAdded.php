@@ -10,28 +10,19 @@ final class PfgActionProductAdded
 {
 
     /**
-     * @var UpdateProductDetailsHandlerInterface
-     */
-    private $productDetailUpdateHandler;
-
-    /**
      * @var string
      */
     private $prefix;
 
-    public function __construct(UpdateProductDetailsHandlerInterface $productDetailUpdateHandler)
+    public static function create(): self
     {
-        $this->productDetailUpdateHandler = $productDetailUpdateHandler;
+        return new self();
     }
 
-    public static function create(UpdateProductDetailsHandlerInterface $productDetailUpdateHandler): self
-    {
-        return new self($productDetailUpdateHandler);
-    }
-
-    public function setPrefix(string $prefix = '')
+    public function setPrefix(string $prefix = ''): self
     {
         $this->prefix = $prefix;
+        return $this;
     }
 
     public function execute(int $productId = null, ProductCore $product = null)
@@ -40,16 +31,15 @@ final class PfgActionProductAdded
             return;
         }
 
-        $command = new UpdateProductDetailsCommand($productId);
         $updated = false;
 
         if (null === $product->ean13 || empty($product->ean13)) {
-            $command->setEan13($this->generateEan13($productId));
+            $product->ean13 = $this->generateEan13($productId);
             $updated = true;
         }
 
         if (null === $product->reference || empty($product->reference)) {
-            $command->setReference($this->generateReference($productId));
+            $product->reference = $this->generateReference($productId);
             $updated = true;
         }
 
@@ -57,7 +47,7 @@ final class PfgActionProductAdded
             return;
         }
 
-        $this->productDetailUpdateHandler->handle($command);
+        $product->update();
     }
 
     private function generateEan13($number): string
