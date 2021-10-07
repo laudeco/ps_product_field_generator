@@ -1,0 +1,23 @@
+{
+    "name": "laurent/psproductfieldgenerator",
+    "authors": [
+        {
+            "name": "Laurent De Coninck",
+            "email": "lau.deconinck@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "PsProductFieldGenerator\\": "src/"
+        },
+        "exclude-from-classmap": []
+    },
+    "config": {
+        "preferred-install": "dist",
+        "prepend-autoloader": false
+    },
+    "type": "prestashop-module",
+    "require": {
+        "picqer/php-barcode-generator": "^2.2"
+    }
+}
