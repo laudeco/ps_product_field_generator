@@ -16,8 +16,5 @@
         "preferred-install": "dist",
         "prepend-autoloader": false
     },
-    "type": "prestashop-module",
-    "require": {
-        "picqer/php-barcode-generator": "^2.2"
-    }
+    "type": "prestashop-module"
 }

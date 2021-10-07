@@ -3,8 +3,6 @@
 namespace PsProductFieldGenerator\Infrastructure\Hook\Listener;
 
 use CombinationCore;
-use PrestaShop\PrestaShop\Core\Domain\Product\Command\UpdateProductDetailsCommand;
-use PrestaShop\PrestaShop\Core\Domain\Product\CommandHandler\UpdateProductDetailsHandlerInterface;
 use ProductCore;
 
 final class PfgActionProductAdded
@@ -111,7 +109,7 @@ final class PfgActionProductAdded
         }
 
         $reference = $this->prefix;
-        $reference .= str_pad($reference, 12 - strlen('' . $productId), 0);
+        $reference = str_pad($reference, 12 - strlen('' . $productId), 0);
         $reference .= $productId;
 
         return $reference;
