@@ -32,3 +32,4 @@ admin-dev/import/
 download/
 /img/*
 upload/
+vendor/
