@@ -14,6 +14,11 @@ final class PfgActionProductAdded
      */
     private $prefix;
 
+    /**
+     * @var bool
+     */
+    private $force = false;
+
     public static function create(): self
     {
         return new self();
@@ -25,6 +30,12 @@ final class PfgActionProductAdded
         return $this;
     }
 
+    public function force(): self
+    {
+        $this->force = true;
+        return $this;
+    }
+
     public function execute(int $productId = null, ProductCore $product = null)
     {
         if (null === $productId || null === $product) {
@@ -33,12 +44,12 @@ final class PfgActionProductAdded
 
         $updated = false;
 
-        if (null === $product->ean13 || empty($product->ean13)) {
+        if ($this->force || null === $product->ean13 || empty($product->ean13)) {
             $product->ean13 = $this->generateEan13($productId);
             $updated = true;
         }
 
-        if (null === $product->reference || empty($product->reference)) {
+        if ($this->force || null === $product->reference || empty($product->reference)) {
             $product->reference = $this->generateReference($productId);
             $updated = true;
         }

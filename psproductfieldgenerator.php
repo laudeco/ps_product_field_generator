@@ -58,12 +58,27 @@ final class psproductfieldgenerator extends Module
 
     public function hookActionProductAdd(array $params)
     {
+        if(isset($params['id_product_old']) && null !== $params['id_product_old']){
+            //Means duplicate
+            $this->executeProductHookWithForce($params);
+            return;
+        }
         $this->executeProductHook($params);
     }
 
     private function executeProductHook(array $params)
     {
-        PfgActionProductAdded::create()->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'))->execute($params['id_product'], $params['product']);
+        PfgActionProductAdded::create()
+            ->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'))
+            ->execute($params['id_product'], $params['product']);
+    }
+
+    private function executeProductHookWithForce(array $params)
+    {
+        PfgActionProductAdded::create()
+            ->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'))
+            ->force()
+            ->execute($params['id_product'], $params['product']);
     }
 
     /**
