@@ -33,6 +33,10 @@ final class psproductfieldgenerator extends Module
         return parent::install()
             && $this->registerHook('actionProductSave')
             && $this->registerHook('actionProductAdd')
+            && $this->registerHook('actionAttributeCombinationSave')
+            && $this->registerHook('actionObjectCombinationUpdateAfter')
+            && $this->registerHook('actionObjectCombinationAddAfter')
+            && $this->registerHook('actionProductAttributeUpdate')
             && $this->registerHook('actionProductUpdate');
     }
 
@@ -56,6 +60,26 @@ final class psproductfieldgenerator extends Module
         $this->executeProductHook($params);
     }
 
+    public function hookActionAttributeCombinationSave(array $params)
+    {
+        $this->executeCombinationIdHook($params);
+    }
+
+    public function hookActionProductAttributeUpdate(array $params)
+    {
+        $this->executeCombinationIdHook($params);
+    }
+
+    public function hookActionObjectCombinationUpdateAfter(array $params)
+    {
+        $this->executeCombinationHook($params['object']);
+    }
+
+    public function hookActionObjectCombinationAddAfter(array $params)
+    {
+        $this->executeCombinationHook($params['object']);
+    }
+
     public function hookActionProductAdd(array $params)
     {
         if(isset($params['id_product_old']) && null !== $params['id_product_old']){
@@ -66,17 +90,48 @@ final class psproductfieldgenerator extends Module
         $this->executeProductHook($params);
     }
 
+    private function executeCombinationIdHook(array $params)
+    {
+        if(!isset($params['id_product_attribute']) || null === $params['id_product_attribute']){
+            return;
+        }
+
+        $this->executeCombinationHook(new CombinationCore($params['id_product_attribute']));
+    }
+
+    private function executeCombinationHook($combination)
+    {
+        $this->generateHookListener()->executeForCombination($combination);
+    }
+
     private function executeProductHook(array $params)
     {
-        PfgActionProductAdded::create()
-            ->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'))
-            ->execute($params['id_product'], $params['product']);
+
+        $allCombinations = $params['product']->getAttributeCombinations(1, false);
+        foreach($allCombinations as $currentCombination){
+            $this->executeCombinationIdHook($currentCombination);
+        }
+
+        $this->generateHookListener()->execute($params['id_product'], $params['product']);
+    }
+
+    private function generateHookListener(){
+        return PfgActionProductAdded::create()->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'));
     }
 
     private function executeProductHookWithForce(array $params)
     {
-        PfgActionProductAdded::create()
-            ->setPrefix(Configuration::get('PFG_CONFIG_REFERENCE_PREFIX'))
+
+        $allCombinations = $params['product']->getAttributeCombinations(1, false);
+        foreach($allCombinations as $currentCombination){
+            $combination = new CombinationCore($currentCombination['id_product_attribute']);
+            $combination->ean13 = '';
+            $combination->reference = '';
+
+            $this->executeCombinationHook($combination);
+        }
+
+        $this->generateHookListener()
             ->force()
             ->execute($params['id_product'], $params['product']);
     }

@@ -2,6 +2,7 @@
 
 namespace PsProductFieldGenerator\Infrastructure\Hook\Listener;
 
+use CombinationCore;
 use PrestaShop\PrestaShop\Core\Domain\Product\Command\UpdateProductDetailsCommand;
 use PrestaShop\PrestaShop\Core\Domain\Product\CommandHandler\UpdateProductDetailsHandlerInterface;
 use ProductCore;
@@ -59,6 +60,31 @@ final class PfgActionProductAdded
         }
 
         $product->update();
+    }
+
+    public function executeForCombination(CombinationCore $combination = null)
+    {
+        if (null === $combination) {
+            return;
+        }
+
+        $updated = false;
+
+        if ($this->force || null === $combination->ean13 || empty($combination->ean13)) {
+            $combination->ean13 = $this->generateEan13((int)($combination->id_product.''.$combination->id));
+            $updated = true;
+        }
+
+        if ($this->force || null === $combination->reference || empty($combination->reference)) {
+            $combination->reference = $this->generateReference((int)($combination->id_product.''.$combination->id));
+            $updated = true;
+        }
+
+        if (!$updated) {
+            return;
+        }
+
+        $combination->update();
     }
 
     private function generateEan13($number): string
