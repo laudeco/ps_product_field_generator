@@ -7,3 +7,9 @@ TODO section...
 ## Supported fields
 * EAN13
 * Reference
+
+# TODO's
+
+* [ ] Using PHPStan to format the code
+* [ ] Add some PHP Unit (it's always better uh)
+* [ ] Support more field
