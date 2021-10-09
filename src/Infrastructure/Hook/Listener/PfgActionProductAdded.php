@@ -108,10 +108,6 @@ final class PfgActionProductAdded
             return '';
         }
 
-        $reference = $this->prefix;
-        $reference = str_pad($reference, 12 - strlen('' . $productId), 0);
-        $reference .= $productId;
-
-        return $reference;
+        return $this->prefix . str_pad($productId, 12, 0);
     }
 }
